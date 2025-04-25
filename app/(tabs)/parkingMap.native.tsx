@@ -1,82 +1,93 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Dimensions, Platform } from 'react-native';
-import MapView, { Polygon, Region } from 'react-native-maps';
+import MapView, { Marker, Region, LatLng } from 'react-native-maps';
 import { ThemedText } from '@/components/ThemedText';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-// Coordenadas reales de la zona de estacionamiento principal
-const parkingZonesData = [
-  {
-    id: 'mainParking', // ID descriptivo
-    coordinates: [
-      { latitude: 25.72481, longitude: -100.31335 }, // Superior izquierda
-      { latitude: 25.72403, longitude: -100.31334 }, // Inferior izquierda
-      { latitude: 25.72403, longitude: -100.31169 }, // Inferior derecha
-      { latitude: 25.72476, longitude: -100.31169 }, // Superior derecha
-    ],
-    availability: 'high', // Puedes cambiar esto dinámicamente después
-  },
-  // Se eliminaron las otras zonas de ejemplo
-];
+// --- Configuración Estimación de Lotes ---
+const LOT_WIDTH_METERS = 4.0; // Ancho estimado de un lote en metros (AUMENTADO MÁS)
+const LOT_DEPTH_METERS = 8.0; // Profundidad estimada de un lote en metros (AUMENTADO MÁS)
+const AISLE_WIDTH_METERS = 6; // Ancho estimado del pasillo (si aplica a tu cálculo)
 
-// Función para obtener el color basado en la disponibilidad
-const getZoneColor = (availability: string) => {
-  switch (availability) {
-    case 'high':
-      return 'rgba(0, 255, 0, 0.5)'; // Verde semitransparente
-    case 'medium':
-      return 'rgba(255, 255, 0, 0.5)'; // Amarillo semitransparente
-    case 'low':
-      return 'rgba(255, 0, 0, 0.5)'; // Rojo semitransparente
-    default:
-      return 'rgba(128, 128, 128, 0.5)'; // Gris por defecto
-  }
+// Aproximación: Grados por metro (varía con la latitud, esto es muy aproximado)
+const METERS_TO_LAT_DEG = 1 / 111111;
+const METERS_TO_LON_DEG_AT_LAT = (lat: number) => 1 / (111111 * Math.cos(lat * Math.PI / 180));
+
+// Coordenadas de las esquinas (las que proporcionaste)
+const corners = {
+  topLeft: { latitude: 25.72481, longitude: -100.31335 },
+  bottomLeft: { latitude: 25.72403, longitude: -100.31334 },
+  bottomRight: { latitude: 25.72403, longitude: -100.31169 },
+  topRight: { latitude: 25.72476, longitude: -100.31169 },
 };
 
+// --- Función para generar lotes aleatorios dentro del área ---
+function generateRandomLots(
+    count: number,
+    minLat: number,
+    maxLat: number,
+    minLon: number,
+    maxLon: number
+): Array<{ id: string; coordinate: LatLng; availability: 'free' | 'occupied' }> {
+    const lots = [];
+    for (let i = 0; i < count; i++) {
+        const randomLat = minLat + Math.random() * (maxLat - minLat);
+        const randomLon = minLon + Math.random() * (maxLon - minLon);
+        lots.push({
+            id: `random-lot-${i}`,
+            coordinate: { latitude: randomLat, longitude: randomLon },
+            // Asignar disponibilidad aleatoria para ejemplo
+            availability: (Math.random() > 0.6 ? 'occupied' : 'free') as 'free' | 'occupied',
+        });
+    }
+    console.log(`Generados ${lots.length} lotes aleatorios.`);
+    return lots;
+}
+
 export default function ParkingMapScreen() {
-  // Coordenadas iniciales del mapa (Actualizadas)
+  const [parkingLots, setParkingLots] = useState<Array<{ id: string; coordinate: LatLng; availability: 'free' | 'occupied' }>>([]);
+  const TARGET_LOT_COUNT = 190;
+
+  // Generar lotes aleatorios una vez al montar el componente
+  useEffect(() => {
+      // Determinar los límites del rectángulo
+      const minLat = Math.min(corners.topLeft.latitude, corners.bottomLeft.latitude, corners.bottomRight.latitude, corners.topRight.latitude);
+      const maxLat = Math.max(corners.topLeft.latitude, corners.bottomLeft.latitude, corners.bottomRight.latitude, corners.topRight.latitude);
+      const minLon = Math.min(corners.topLeft.longitude, corners.bottomLeft.longitude, corners.bottomRight.longitude, corners.topRight.longitude);
+      const maxLon = Math.max(corners.topLeft.longitude, corners.bottomLeft.longitude, corners.bottomRight.longitude, corners.topRight.longitude);
+
+      const randomLots = generateRandomLots(TARGET_LOT_COUNT, minLat, maxLat, minLon, maxLon);
+      setParkingLots(randomLots);
+  }, []);
+
+  // Coordenadas iniciales del mapa (Centradas en el estacionamiento)
   const initialRegion: Region = {
-    latitude: 25.724528,
-    longitude: -100.312694,
-    latitudeDelta: 0.005, // Ajustar el zoom según sea necesario
-    longitudeDelta: 0.005 * (Dimensions.get('window').width / Dimensions.get('window').height),
+    latitude: (corners.topLeft.latitude + corners.bottomRight.latitude) / 2,
+    longitude: (corners.topLeft.longitude + corners.bottomRight.longitude) / 2,
+    latitudeDelta: Math.abs(corners.topLeft.latitude - corners.bottomLeft.latitude) * 1.5,
+    longitudeDelta: Math.abs(corners.topLeft.longitude - corners.topRight.longitude) * 1.5,
   };
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <ThemedText type="title" style={styles.title}>Mapa del Campus</ThemedText>
+      <ThemedText type="title" style={styles.title}>Disponibilidad Estacionamiento (Aleatorio)</ThemedText>
       <MapView
         style={styles.map}
         initialRegion={initialRegion}
-        mapType="hybrid"
+        mapType="standard"
         showsUserLocation={true}
         showsMyLocationButton={true}
+        rotateEnabled={false}
+        pitchEnabled={false}
       >
-        {parkingZonesData.map((zone) => (
-          <Polygon
-            key={zone.id}
-            coordinates={zone.coordinates}
-            fillColor={getZoneColor(zone.availability)}
-            strokeColor="rgba(255,255,255,0.7)"
-            strokeWidth={1.5}
+        {parkingLots.map((lot) => (
+          <Marker
+            key={lot.id}
+            coordinate={lot.coordinate}
+            pinColor={lot.availability === 'free' ? 'green' : 'red'}
           />
         ))}
       </MapView>
-      <View style={styles.legendContainer}>
-        <ThemedText style={styles.legendTitle}>Disponibilidad:</ThemedText>
-        <View style={styles.legendItem}>
-            <View style={[styles.legendColorBox, { backgroundColor: getZoneColor('high') }]} />
-            <ThemedText style={styles.legendText}>Alta</ThemedText>
-        </View>
-         <View style={styles.legendItem}>
-            <View style={[styles.legendColorBox, { backgroundColor: getZoneColor('medium') }]} />
-            <ThemedText style={styles.legendText}>Media</ThemedText>
-        </View>
-         <View style={styles.legendItem}>
-            <View style={[styles.legendColorBox, { backgroundColor: getZoneColor('low') }]} />
-            <ThemedText style={styles.legendText}>Baja</ThemedText>
-        </View>
-      </View>
     </SafeAreaView>
   );
 }
@@ -84,52 +95,16 @@ export default function ParkingMapScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: '#f0f0f0',
   },
   title: {
       textAlign: 'center',
       marginVertical: Platform.OS === 'ios' ? 10 : 15,
-      color: '#fff',
-      fontSize: 22,
+      color: '#333',
+      fontSize: 20,
       fontWeight: 'bold',
   },
   map: {
     flex: 1,
   },
-  legendContainer: {
-      padding: 8,
-      backgroundColor: 'rgba(0, 0, 0, 0.7)',
-      position: 'absolute',
-      bottom: Platform.OS === 'ios' ? 30 : 15,
-      right: 15,
-      borderRadius: 8,
-      elevation: 5,
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.4,
-      shadowRadius: 3,
-  },
-   legendTitle: {
-      fontWeight: '600',
-      marginBottom: 6,
-      color: '#fff',
-      fontSize: 14,
-  },
-  legendItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 4,
-  },
-  legendColorBox: {
-      width: 14,
-      height: 14,
-      marginRight: 8,
-      borderRadius: 3,
-      borderWidth: 1,
-      borderColor: 'rgba(255, 255, 255, 0.5)',
-  },
-  legendText: {
-      color: '#eee',
-      fontSize: 12,
-  }
 }); 
