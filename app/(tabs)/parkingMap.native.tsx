@@ -4,39 +4,19 @@ import MapView, { Polygon, Region } from 'react-native-maps';
 import { ThemedText } from '@/components/ThemedText';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-// Coordenadas de ejemplo para las zonas (Polígonos)
-// Debes reemplazarlas con las coordenadas reales de las zonas de estacionamiento del campus
+// Coordenadas reales de la zona de estacionamiento principal
 const parkingZonesData = [
   {
-    id: 'zone1',
+    id: 'mainParking', // ID descriptivo
     coordinates: [
-      { latitude: 25.7250, longitude: -100.3120 },
-      { latitude: 25.7248, longitude: -100.3125 },
-      { latitude: 25.7240, longitude: -100.3123 },
-      { latitude: 25.7242, longitude: -100.3118 },
+      { latitude: 25.72481, longitude: -100.31335 }, // Superior izquierda
+      { latitude: 25.72403, longitude: -100.31334 }, // Inferior izquierda
+      { latitude: 25.72403, longitude: -100.31169 }, // Inferior derecha
+      { latitude: 25.72476, longitude: -100.31169 }, // Superior derecha
     ],
-    availability: 'high', // 'high', 'medium', 'low'
+    availability: 'high', // Puedes cambiar esto dinámicamente después
   },
-  {
-    id: 'zone2',
-    coordinates: [
-      { latitude: 25.7235, longitude: -100.3140 },
-      { latitude: 25.7233, longitude: -100.3145 },
-      { latitude: 25.7228, longitude: -100.3143 },
-      { latitude: 25.7230, longitude: -100.3138 },
-    ],
-    availability: 'medium',
-  },
-    {
-    id: 'zone3',
-    coordinates: [
-      { latitude: 25.7255, longitude: -100.3100 },
-      { latitude: 25.7253, longitude: -100.3105 },
-      { latitude: 25.7248, longitude: -100.3103 },
-      { latitude: 25.7250, longitude: -100.3098 },
-    ],
-    availability: 'low',
-  },
+  // Se eliminaron las otras zonas de ejemplo
 ];
 
 // Función para obtener el color basado en la disponibilidad
