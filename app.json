@@ -9,13 +9,17 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.mau.campuspakingapp",
+      "googleServicesFile": "./firebase-config/GoogleService-Info.plist"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.mau.campuspakingapp",
+      "googleServicesFile": "./firebase-config/google-services.json"
     },
     "web": {
       "bundler": "metro",
@@ -36,6 +40,15 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "5a6c5725-3af2-4e6a-9dac-63140433196a"
+      }
+    },
+    "owner": "oiciruamz"
   }
 }

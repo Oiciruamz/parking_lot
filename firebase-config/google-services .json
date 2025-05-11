@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "869793137919",
+    "project_id": "parkfacu-8c88b",
+    "storage_bucket": "parkfacu-8c88b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:869793137919:android:c11cca9edeaa7bc03c38ca",
+        "android_client_info": {
+          "package_name": "com.mau.campuspakingapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDfEgSF9nNX-y_2ex_IDvLBRWik0c-aZOo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
