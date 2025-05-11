@@ -26,7 +26,7 @@
       },
       "package": "com.mau.campuspakingapp",
       "googleServicesFile": "./firebase-config/google-services.json",
-      "config": {
+      "config":  {
         "googleMaps": {
           "apiKey": "AIzaSyD4R_AouawgetPEI8NZ0msu_C6xxCKM7sM"
         }
