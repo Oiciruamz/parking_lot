@@ -104,7 +104,7 @@ export default function LoginScreen() {
               </TouchableOpacity>
               
               <View style={styles.registerContainer}>
-                <ThemedText>¿No tienes una cuenta? </ThemedText>
+                <ThemedText style={styles.registerQuestionText} >¿No tienes cuenta? </ThemedText>
                 <TouchableOpacity onPress={navigateToRegister}>
                   <ThemedText style={styles.registerText}>Regístrate</ThemedText>
                 </TouchableOpacity>
@@ -195,29 +195,51 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#3498db',
-    padding: 15,
+    paddingVertical: 14,
+    paddingHorizontal: 10,
     borderRadius: 8,
     width: '100%',
     alignItems: 'center',
     marginBottom: 15,
   },
   buttonText: {
+    textAlign: 'center',
+    width: '100%',
     color: 'white',
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 15,
   },
   forgotPasswordButton: {
     marginBottom: 20,
+    alignSelf: 'stretch',
   },
   forgotPasswordText: {
     color: '#3498db',
+    textAlign: 'center',
+    flexShrink: 1,
   },
   registerContainer: {
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderBlockColor: 'red',
+    borderWidth: 1,
+    borderStyle: 'solid',
     flexDirection: 'row',
     marginTop: 10,
+    marginRight: 5
+  },
+  registerQuestionText: {
+    fontSize: 13,
+    overflow: 'visible',
+    width: 120,
+
   },
   registerText: {
+    width: 75,
+    textAlign: 'left',
     color: '#3498db',
     fontWeight: 'bold',
+
   },
 }); 

@@ -52,7 +52,7 @@ export default function ProfileScreen() {
           </ThemedText>
           
           <View style={styles.infoRow}>
-            <ThemedText style={styles.infoLabel}>ID de usuario:</ThemedText>
+            <ThemedText style={styles.infoLabel}>ID de usuario:        </ThemedText>
             <ThemedText style={styles.infoValue}>{user?.uid}</ThemedText>
           </View>
           

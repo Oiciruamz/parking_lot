@@ -5,6 +5,7 @@ import { ThemedView } from '@/components/ThemedView';
 import { useAuth } from './AuthContext';
 import { router } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
+import { red } from 'react-native-reanimated/lib/typescript/Colors';
 
 export default function RegisterScreen() {
   const [name, setName] = useState('');
@@ -45,8 +46,8 @@ export default function RegisterScreen() {
   return (
     <KeyboardAvoidingView 
       style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
+      behavior={Platform.OS === 'android' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'android' ? 64 : 0}
     >
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <ThemedView style={styles.formContainer}>
@@ -104,12 +105,12 @@ export default function RegisterScreen() {
             )}
           </TouchableOpacity>
           
-          <View style={styles.loginContainer}>
-            <ThemedText>¿Ya tienes una cuenta? </ThemedText>
-            <TouchableOpacity onPress={navigateToLogin}>
-              <ThemedText style={styles.loginText}>Inicia sesión</ThemedText>
-            </TouchableOpacity>
-          </View>
+            <View style={styles.loginContainer}>
+              <ThemedText textBreakStrategy="simple" >¿Ya tienes cuenta?  </ThemedText>
+              <TouchableOpacity onPress={navigateToLogin}>
+                <ThemedText textBreakStrategy="simple" style={styles.loginText}>  Inicia sesión </ThemedText>
+              </TouchableOpacity>
+            </View>
         </ThemedView>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -138,13 +139,18 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   title: {
+    display: 'flex',
+    textAlign: 'center',
+    width: '100%',
     fontSize: 32,
     fontWeight: 'bold',
     marginBottom: 8,
   },
   subtitle: {
-    marginBottom: 30,
+    display: 'flex',
     textAlign: 'center',
+    width: '100%',
+    marginBottom: 30,
   },
   inputContainer: {
     width: '100%',
@@ -160,23 +166,29 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#3498db',
-    padding: 15,
+    paddingVertical: 14,
+    paddingHorizontal: 10,
     borderRadius: 8,
     width: '100%',
     alignItems: 'center',
     marginBottom: 15,
   },
   buttonText: {
+    display: 'flex',
+    textAlign: 'center',
+    width: '100%',
     color: 'white',
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 15,
   },
   loginContainer: {
-    flexDirection: 'row',
-    marginTop: 10,
-  },
-  loginText: {
-    color: '#3498db',
-    fontWeight: 'bold',
-  },
+      flexDirection: 'row',      // ponlos en la misma línea
+      flexWrap:     'wrap',      // deja que hagan salto si falta espacio
+      marginTop: 10,
+    },
+    loginText: {
+      // width: 50,              ⬅️  ¡fuera!
+      color: '#3498db',
+      marginRight: 4,            // un pequeño espacio entre textos
+    },
 }); 

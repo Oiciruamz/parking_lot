@@ -16,28 +16,32 @@ SplashScreen.preventAutoHideAsync();
 function ProtectedRouteGuard({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
   const segments = useSegments();
-  const pathname = usePathname();
   
   useEffect(() => {
+    if (loading) {
+      return; // No hacer nada hasta que la carga inicial del estado de autenticación termine
+    }
+
     const inAuthGroup = segments[0] === 'auth';
-    
-    // Verificar si el usuario está autenticado
-    if (!loading) {
-      // Si el usuario no está autenticado y no está en el grupo de autenticación,
-      // redirigir a la pantalla de login
-      if (!user && !inAuthGroup) {
+    const inTabsGroup = segments[0] === '(tabs)';
+
+    if (!user) { // Usuario NO está autenticado
+      if (!inAuthGroup) {
+        // Si no está en una pantalla de auth (login/registro), redirigir a login
         router.replace('/auth/login');
       }
-      
-      // Si el usuario está autenticado y está en el grupo de autenticación
-      // (excepto en la ruta de perfil), redirigir a la pantalla principal
-      if (user && inAuthGroup && !pathname.includes('/auth/profile')) {
-        router.replace('/');
+      // Si no está autenticado Y está en una pantalla de auth, se queda ahí (no hace nada)
+    } else { // Usuario SÍ está autenticado
+      if (!inTabsGroup) {
+        // Si está autenticado pero NO está en la sección de pestañas, redirigir al mapa
+        // Esto cubre el caso de estar en app/index.tsx o incluso en /auth/login después de que user se actualice.
+        router.replace('/(tabs)/parkingMap');
       }
+      // Si está autenticado Y ya está en las pestañas, se queda ahí (no hace nada)
     }
-  }, [user, loading, segments, pathname]);
+  }, [user, loading, segments]); // Quitado pathname de las dependencias por ahora
   
-  // Mientras carga, mostrar indicador
+  // Mientras carga el estado de autenticación inicial, mostrar indicador
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
