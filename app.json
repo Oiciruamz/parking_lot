@@ -14,6 +14,9 @@
       "googleServicesFile": "./firebase-config/GoogleService-Info.plist",
       "config": {
         "googleMapsApiKey": "AIzaSyD4R_AouawgetPEI8NZ0msu_C6xxCKM7sM"
+      },
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
@@ -25,7 +28,7 @@
       "googleServicesFile": "./firebase-config/google-services.json",
       "config": {
         "googleMaps": {
-          "apiKey": "AIzaSyDfEgSF9nNX-y_2ex_IDvLBRWik0c-aZOo"
+          "apiKey": "AIzaSyD4R_AouawgetPEI8NZ0msu_C6xxCKM7sM"
         }
       }
     },
