@@ -19,7 +19,12 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.mau.campuspakingapp",
-      "googleServicesFile": "./firebase-config/google-services.json"
+      "googleServicesFile": "./firebase-config/google-services.json",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyDfEgSF9nNX-y_2ex_IDvLBRWik0c-aZOo"
+        }
+      }
     },
     "web": {
       "bundler": "metro",
