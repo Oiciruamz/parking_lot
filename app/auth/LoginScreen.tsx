@@ -222,9 +222,6 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    borderBlockColor: 'red',
-    borderWidth: 1,
-    borderStyle: 'solid',
     flexDirection: 'row',
     marginTop: 10,
     marginRight: 5
